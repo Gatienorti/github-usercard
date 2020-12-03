@@ -3,7 +3,18 @@
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
-
+import axios from "axios"
+axios.get('https://api.github.com/users/Gatienorti')
+  .then(data =>{
+    console.log(data.data.html_url)
+    const a = cardMaker(data)
+    console.log(a)
+    entryPoint.appendChild(a)
+  })
+  .catch(err=>{
+    console.log(err)
+  })
+  const entryPoint = document.querySelector('.cards')
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -26,10 +37,26 @@
 
     Using that array, iterate over it, requesting data for each user, creating a new card for each
     user, and adding that card to the DOM.
+*//*
+  List of LS Instructors Github username's:
+    tetondan
+    dustinmyers
+    justsml
+    luishrd
+    bigknell
 */
 
-const followersArray = [];
+const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
 
+followersArray.forEach(a=>{
+  axios.get(`https://api.github.com/users/${a}`)
+  .then(inf=>{
+    entryPoint.appendChild(cardMaker(inf))
+  })
+  .catch(err=>{
+    console.log(err)
+  })
+})
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
     Using DOM methods and properties, create and return the following markup:
@@ -49,6 +76,49 @@ const followersArray = [];
       </div>
     </div>
 */
+function cardMaker (a){
+  let card = document.createElement('div')
+  let image = document.createElement('img')
+  let cardInf = document.createElement('div')
+  let name = document.createElement('h3')
+  let userName = document.createElement('p')
+  let location = document.createElement('p')
+  let profile = document.createElement('p')
+  let intoProfile = document.createElement('a')
+  let followers = document.createElement('p')
+  let following = document.createElement('p')
+  let bio = document.createElement('p')
+
+  image.src = a.data['avatar_url']
+  name.textContent = a.data.name
+  userName.textContent = a.data.login
+  location.textContent = `Location: ${a.data.location}`
+  profile.textContent = `Profile: `
+  intoProfile.textContent = a.data.html_url
+  followers.textContent =`Followers: ${a.data.followers}`
+  following.textContent =`Following: ${a.data.following}`
+  bio.textContent = `Bio: ${a.data.bio}`
+ 
+
+  card.classList.add('card')
+  cardInf.classList.add('card-info')
+  name.classList.add('name')
+  userName.classList.add('username')
+  intoProfile.setAttribute('href', `${a.data.html_url}`)
+
+  card.appendChild(image)
+  card.appendChild(cardInf)
+  cardInf.appendChild(name)
+  cardInf.appendChild(userName)
+  cardInf.appendChild(location)
+  cardInf.appendChild(profile)
+    profile.appendChild(intoProfile)
+  cardInf.appendChild(followers)
+  cardInf.appendChild(following)
+  cardInf.appendChild(bio)
+
+  return card
+}
 
 /*
   List of LS Instructors Github username's:
